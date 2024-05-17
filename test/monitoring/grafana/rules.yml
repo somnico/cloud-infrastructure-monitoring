@@ -1,0 +1,66 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: Default
+      folder: Grafana Alerts
+      interval: 5m
+      rules:
+        - uid: fdlosywhfludcf
+          title: Denied Login Attempts
+          condition: B
+          data:
+            - refId: A
+              queryType: instant
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: P8E80F9AEF21F6940
+              model:
+                datasource:
+                    type: loki
+                    uid: P8E80F9AEF21F6940
+                editorMode: code
+                expr: sum by(ip, username) (count_over_time({agent="fluentd", service="artifactory"} | json | log_source = "jfrog.rt.artifactory.access", action_response= "DENIED LOGIN" [5m]))
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                queryType: instant
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 5
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                      unloadEvaluator:
+                        params:
+                            - 4
+                        type: lt
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: B
+                type: threshold
+          noDataState: NoData
+          execErrState: Error
+          for: 0s
+          annotations: {}
+          labels: {}
+          isPaused: false
