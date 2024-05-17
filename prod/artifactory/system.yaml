@@ -1,0 +1,16 @@
+shared:
+    # Adding the jmx exporter on port 8090 with specified config
+    extraJavaOpts: "-javaagent:/opt/jmx/jmx_prometheus_javaagent-0.20.0.jar=0.0.0.0:8090:/opt/jmx/config.yaml"
+    logging:
+        # Redirecting all service console logs to console.log every hour
+        consoleLog:
+            enabled: true
+        rotation:
+            maxSizeMb: 25
+            maxFiles: 10
+            compress: true
+            
+artifactory:
+    # Enabling artifactory metrics
+    metrics:
+        enabled: true
