@@ -1,0 +1,40 @@
+route:
+  # Group alerts by the 'alertname' label
+  group_by: ['alertname']
+  # Wait 30 seconds before sending the first notification
+  group_wait: 30s
+  # If more alerts arrive during this time, they will be added to the same group
+  group_interval: 5m
+  # Repeat notification for ongoing alerts every 1 hour
+  repeat_interval: 1h
+  # Default receiver for alerts
+  receiver: 'send_email'
+
+receivers:
+  # Define a receiver named 'send_email'
+- name: 'send_email'
+  email_configs:
+    # Send email to this address
+    - to: equinormonitoring@gmail.com
+      # Send notifications when alerts are resolved
+      send_resolved: true
+      # Sender email address
+      from: <email_here>
+      # SMTP server and port
+      smarthost: smtp.gmail.com:587
+      # SMTP authentication username
+      auth_username: '<email_here>'
+      # SMTP authentication password
+      auth_password: 'password_here'
+      # Require TLS encryption for email
+      require_tls: true
+
+inhibit_rules:
+  # Source match condition: alerts with severity 'critical'
+  - source_match:
+      severity: 'critical'
+    # Target match condition: alerts with severity 'warning'
+    target_match:
+      severity: 'warning'
+    # Apply inhibition if 'alertname', 'dev', and 'instance' labels are equal
+    equal: ['alertname', 'dev', 'instance']
