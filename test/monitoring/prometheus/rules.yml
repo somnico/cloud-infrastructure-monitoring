@@ -1,0 +1,27 @@
+groups:
+  # Define a group of alerting rules
+- name: alert.rules 
+  rules:
+  - alert: InstanceDown  
+    # Trigger the alert if the instance is down
+    expr: up == 0  
+    # The expression should hold true for 15 seconds before triggering the alert
+    for: 15s
+    labels:
+      # Severity level of the alert is critical
+      severity: "critical" 
+    annotations:
+      summary: "Endpoint {{ $labels.instance }} down"  
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minutes."  
+  
+  - alert: HostOutOfMemory  # Alert name: HostOutOfMemory
+    # Trigger the alert if JVM memory usage exceeds 75%
+    expr: (jvm_memory_bytes_used / jvm_memory_bytes_max) * 100 > 75 
+    # The expression should hold true for 30 seconds before triggering the alert
+    for: 30s
+    labels:
+      # Severity level of the alert is warning
+      severity: warning
+    annotations:
+      summary: "Host out of memory (instance {{ $labels.instance }})" 
+      description: "JVM memory usage is high (> 75%)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"  
