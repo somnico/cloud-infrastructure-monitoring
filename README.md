@@ -1,1 +1,1 @@
-### Equinor Cloud Infrastructure Monitoring
+### Equinor Cloud Infrastructure Monitoring Guide
