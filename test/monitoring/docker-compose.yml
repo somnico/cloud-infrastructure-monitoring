@@ -3,76 +3,73 @@ services:
   prometheus:
     image: prom/prometheus:latest
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./rules.yml:/etc/prometheus/rules.yml
-      - prometheus_data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml  # Mount Prometheus configuration file
+      - ./rules.yml:/etc/prometheus/rules.yml            # Mount rules file for alerting
+      - prometheus_data:/prometheus                      # Persistent storage for Prometheus data
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
+      - '--config.file=/etc/prometheus/prometheus.yml'   # Specify Prometheus configuration file
+      - '--storage.tsdb.path=/prometheus'                # Specify data storage path
     ports:
-      - 9090:9090
+      - 9090:9090                                        # Expose Prometheus on port 9090
   alertmanager:
     image: prom/alertmanager
     privileged: true
     volumes:
-      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml  # Mount Alertmanager configuration file
     command:
-      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--config.file=/etc/alertmanager/alertmanager.yml'  # Specify Alertmanager configuration file
     ports:
-      - '9093:9093'
+      - '9093:9093'                                       # Expose Alertmanager on port 9093
   nginx-prometheus-exporter:
     image: nginx/nginx-prometheus-exporter:1.1.0
-    command: --nginx.scrape-uri=http://10.75.144.27:8080/status
+    command: --nginx.scrape-uri=http://10.75.144.27:8080/status  # Scrape NGINX metrics from this URI
     ports:
-      - 9113:9113
+      - 9113:9113                                        # Expose NGINX exporter on port 9113
   nginx-plus-prometheus-exporter:
     image: nginx/nginx-prometheus-exporter:1.1.0
-    command: --nginx.plus --nginx.scrape-uri=http://10.85.198.22:8080/api
+    command: --nginx.plus --nginx.scrape-uri=http://10.85.198.22:8080/api  # Scrape NGINX Plus metrics from this URI
     ports:
-      - 9114:9113
+      - 9114:9113                                        # Expose NGINX Plus exporter on port 9114
 
 volumes:
-  prometheus_data:
+  prometheus_data:                                        # Define volume for Prometheus data
 
 
 #### GRAFANA ####
 networks:
   grafana:
-    driver: bridge
+    driver: bridge                                       # Use bridge network for Grafana services
 
 services:
   loki:
     image: grafana/loki:2.9.2
     ports:
-      - "3100:3100"
+      - "3100:3100"                                      # Expose Loki on port 3100
     volumes:
-      - /etc/loki/local-config.yaml:/etc/loki/local-config.yaml
-      - loki-data:/loki      
-    command: -config.file=/etc/loki/local-config.yaml
+      - /etc/loki/local-config.yaml:/etc/loki/local-config.yaml  # Mount Loki configuration file
+      - loki-data:/loki                                  # Persistent storage for Loki data
+    command: -config.file=/etc/loki/local-config.yaml    # Specify Loki configuration file
     networks:
-      - grafana
+      - grafana                                          # Connect Loki to the Grafana network
 
   grafana:
     environment:
-      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
-      # - GF_SECURITY_ADMIN_USER=admin
-      # - GF_SECURITY_ADMIN_PASSWORD=password
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning  # Path for Grafana provisioning files
+      - GF_AUTH_ANONYMOUS_ENABLED=true                   # Enable anonymous access
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin                 # Set role for anonymous access to Admin
+      - GF_SMTP_ENABLED=true                             # Enable SMTP for email notifications
+      - GF_SMTP_HOST=smtp.gmail.com:587                  # SMTP server host and port
+      - GF_SMTP_USER=nicosperg@gmail.com                 # SMTP username
+      - GF_SMTP_PASSWORD=xxcksvsrkztcvsyj                # SMTP password (use environment variables for security)
+      - GF_SMTP_FROM_ADDRESS=nicosperg@gmail.com         # Email address to send from
+      - GF_SMTP_FROM_NAME=Grafana                        # Name to use in sent emails
+      - GF_SMTP_TLS_ENABLED=true                         # Enable TLS for SMTP
 
-      - GF_SMTP_ENABLED=true
-      - GF_SMTP_HOST=smtp.gmail.com:587
-      - GF_SMTP_USER=nicosperg@gmail.com
-      - GF_SMTP_PASSWORD=xxcksvsrkztcvsyj
-      - GF_SMTP_FROM_ADDRESS=nicosperg@gmail.com
-      - GF_SMTP_FROM_NAME=Grafana
-      - GF_SMTP_TLS_ENABLED=true
-      
     entrypoint:
       - sh
       - -euc
       - |
-        mkdir -p /etc/grafana/provisioning/datasources
+        mkdir -p /etc/grafana/provisioning/datasources  # Create directory for data sources
         cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
         apiVersion: 1
         datasources:
@@ -93,22 +90,22 @@ services:
         /run.sh
     image: grafana/grafana:latest
     ports:
-      - "3000:3000"
+      - "3000:3000"                                      # Expose Grafana on port 3000
     networks:
-      - grafana
+      - grafana                                          # Connect Grafana to the Grafana network
     volumes:
-      - grafana-data:/var/lib/grafana
+      - grafana-data:/var/lib/grafana                    # Persistent storage for Grafana data
       
 volumes:
-  loki-data:
-  grafana-data:
+  loki-data:                                             # Define volume for Loki data
+  grafana-data:                                          # Define volume for Grafana data
 
 #### ARTIFACTORY EXPORTER ####
 services:
   artifactory_exporter:
     image: peimanja/artifactory_exporter:latest
     ports:
-      - "9531:9531"
+      - "9531:9531"                                      # Expose Artifactory exporter on port 9531
     env_file:
-      - /opt/exp/env.env
-    command: --optional-metric=artifacts --optional-metric=replication_status
+      - /opt/exp/env.env                                 # Load environment variables from file
+    command: --optional-metric=artifacts --optional-metric=replication_status  # Specify optional metrics to collect
