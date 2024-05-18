@@ -1,0 +1,27 @@
+# /etc/systemd/system/fluent.service
+
+# Description of the service
+[Unit]
+Description=Fluentd
+
+# Ensure network is available before starting
+Wants=network-online.target
+After=network-online.target
+
+# Reset StartLimitIntervalSec to 0 for unlimited restarts
+StartLimitIntervalSec=0
+
+# Specify user and group for the service
+[Service]
+User=root
+Group=root
+
+# Define service type, restart behavior, and start command
+Type=simple
+Restart=on-failure
+RestartSec=5s
+ExecStart=fluentd --config /etc/fluent/fluent.conf
+
+# Define target for installation 
+[Install]
+WantedBy=multi-user.target
