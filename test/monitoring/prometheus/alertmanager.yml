@@ -25,7 +25,7 @@ receivers:
       # SMTP authentication username
       auth_username: '<email_here>'
       # SMTP authentication password
-      auth_password: 'password_here'
+      auth_password: '<password_here>'
       # Require TLS encryption for email
       require_tls: true
 
