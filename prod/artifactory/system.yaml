@@ -1,3 +1,5 @@
+# /opt/jfrog/artifactory/var/etc/system.yaml
+
 shared:
     # Adding the jmx exporter on port 8090 with specified config
     extraJavaOpts: "-javaagent:/opt/jmx/jmx_prometheus_javaagent-0.20.0.jar=0.0.0.0:8090:/opt/jmx/config.yaml"
