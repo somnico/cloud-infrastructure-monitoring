@@ -1,78 +1,40 @@
-#### PROMETHEUS, ALERTMANAGER, EXPORTERS ####
 services:
-  prometheus:
-    image: prom/prometheus:latest
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml  # Mount Prometheus configuration file
-      - ./rules.yml:/etc/prometheus/rules.yml            # Mount rules file for alerting
-      - prometheus_data:/prometheus                      # Persistent storage for Prometheus data
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'   # Specify Prometheus configuration file
-      - '--storage.tsdb.path=/prometheus'                # Specify data storage path
-    ports:
-      - 9090:9090                                        # Expose Prometheus on port 9090
-  alertmanager:
-    image: prom/alertmanager
-    privileged: true
-    volumes:
-      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml  # Mount Alertmanager configuration file
-    command:
-      - '--config.file=/etc/alertmanager/alertmanager.yml'  # Specify Alertmanager configuration file
-    ports:
-      - '9093:9093'                                       # Expose Alertmanager on port 9093
-  nginx-prometheus-exporter:
-    image: nginx/nginx-prometheus-exporter:1.1.0
-    command: --nginx.scrape-uri=http://10.75.144.27:8080/status  # Scrape NGINX metrics from this URI
-    ports:
-      - 9113:9113                                        # Expose NGINX exporter on port 9113
-  nginx-plus-prometheus-exporter:
-    image: nginx/nginx-prometheus-exporter:1.1.0
-    command: --nginx.plus --nginx.scrape-uri=http://10.85.198.22:8080/api  # Scrape NGINX Plus metrics from this URI
-    ports:
-      - 9114:9113                                        # Expose NGINX Plus exporter on port 9114
-
-volumes:
-  prometheus_data:                                        # Define volume for Prometheus data
-
-
-#### GRAFANA ####
-networks:
-  grafana:
-    driver: bridge                                       # Use bridge network for Grafana services
-
-services:
-  loki:
-    image: grafana/loki:2.9.2
-    ports:
-      - "3100:3100"                                      # Expose Loki on port 3100
-    volumes:
-      - /etc/loki/local-config.yaml:/etc/loki/local-config.yaml  # Mount Loki configuration file
-      - loki-data:/loki                                  # Persistent storage for Loki data
-    command: -config.file=/etc/loki/local-config.yaml    # Specify Loki configuration file
-    networks:
-      - grafana                                          # Connect Loki to the Grafana network
-
+  # Grafana service configuration
   grafana:
     environment:
-      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning  # Path for Grafana provisioning files
-      - GF_AUTH_ANONYMOUS_ENABLED=true                   # Enable anonymous access
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin                 # Set role for anonymous access to Admin
-      - GF_SMTP_ENABLED=true                             # Enable SMTP for email notifications
-      - GF_SMTP_HOST=smtp.gmail.com:587                  # SMTP server host and port
-      - GF_SMTP_USER=nicosperg@gmail.com                 # SMTP username
-      - GF_SMTP_PASSWORD=xxcksvsrkztcvsyj                # SMTP password (use environment variables for security)
-      - GF_SMTP_FROM_ADDRESS=nicosperg@gmail.com         # Email address to send from
-      - GF_SMTP_FROM_NAME=Grafana                        # Name to use in sent emails
-      - GF_SMTP_TLS_ENABLED=true                         # Enable TLS for SMTP
+      # Set Grafana provisioning path
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      # Set Grafana admin username
+      - GF_SECURITY_ADMIN_USER=admin
+      # Set Grafana admin password
+      - GF_SECURITY_ADMIN_PASSWORD=password
 
+      # Enable SMTP for email notifications
+      - GF_SMTP_ENABLED=true
+      # SMTP host configuration
+      - GF_SMTP_HOST=smtp.gmail.com:587
+      # SMTP user email
+      - GF_SMTP_USER=<email_here>
+      # SMTP user password
+      - GF_SMTP_PASSWORD=<password_here>
+      # Email address for Grafana
+      - GF_SMTP_FROM_ADDRESS=<email_here>
+      # Display name for emails sent by Grafana
+      - GF_SMTP_FROM_NAME=Grafana
+      # Enable TLS for SMTP
+      - GF_SMTP_TLS_ENABLED=true
     entrypoint:
+      # Use shell as the entrypoint
       - sh
       - -euc
       - |
-        mkdir -p /etc/grafana/provisioning/datasources  # Create directory for data sources
+        # Create provisioning directory for datasources
+        mkdir -p /etc/grafana/provisioning/datasources
+        # Create datasource configuration file
         cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
         apiVersion: 1
         datasources:
+        # Configure Loki as a datasource
         - name: Loki
           type: loki
           access: proxy 
@@ -81,31 +43,104 @@ services:
           basicAuth: false
           version: 1
           editable: false
+        # Configure Prometheus as a datasource and set it as default
         - name: Prometheus
           type: prometheus
-          url: http://10.85.198.24:9090/
+          url: http://prometheus:9090/
           access: proxy
           isDefault: true
         EOF
+        # Run the Grafana startup script
         /run.sh
+    # Use the latest Grafana image
     image: grafana/grafana:latest
     ports:
-      - "3000:3000"                                      # Expose Grafana on port 3000
+      # Expose port 3000 for Grafana
+      - '3000:3000'
     networks:
-      - grafana                                          # Connect Grafana to the Grafana network
+      - grafana
     volumes:
-      - grafana-data:/var/lib/grafana                    # Persistent storage for Grafana data
-      
-volumes:
-  loki-data:                                             # Define volume for Loki data
-  grafana-data:                                          # Define volume for Grafana data
+      # Persist Grafana data
+      - grafana-data:/var/lib/grafana
 
-#### ARTIFACTORY EXPORTER ####
-services:
+  # Loki service configuration
+  loki:
+    image: grafana/loki:2.9.2
+    ports:
+      # Expose port 3100 for Loki
+      - '3100:3100'
+    volumes:
+      # Mount local Loki configuration file
+      - /etc/loki/local-config.yaml:/etc/loki/local-config.yaml
+      # Persist Loki data
+      - loki-data:/loki      
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - grafana
+
+  # Prometheus service configuration
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      # Mount Prometheus configuration file
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      # Mount Prometheus rules file
+      - ./rules.yml:/etc/prometheus/rules.yml
+      # Persist Prometheus data
+      - prometheus_data:/prometheus
+    command:
+      # Specify Prometheus configuration file
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      # Specify storage path for Prometheus
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      # Expose port 9090 for Prometheus
+      - '9090:9090'
+    networks:
+      - grafana
+
+  # Alertmanager service configuration
+  alertmanager:
+    image: prom/alertmanager
+    privileged: true
+    volumes:
+      # Mount Alertmanager configuration file
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    command:
+      # Specify Alertmanager configuration file
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    ports:
+      # Expose port 9093 for Alertmanager
+      - '9093:9093'
+    networks:
+      - grafana
+
+  # NGINX Prometheus Exporter configuration
+  nginx-prometheus-exporter:
+    image: nginx/nginx-prometheus-exporter:1.1.0
+    command: --nginx.scrape-uri=http://10.75.144.27:8080/status
+    ports:
+      # Expose port 9113 for NGINX exporter
+      - '9113:9113'
+
+  # Artifactory Exporter configuration
   artifactory_exporter:
     image: peimanja/artifactory_exporter:latest
     ports:
-      - "9531:9531"                                      # Expose Artifactory exporter on port 9531
+      # Expose port 9531 for Artifactory exporter
+      - '9531:9531'
     env_file:
-      - /opt/exp/env.env                                 # Load environment variables from file
-    command: --optional-metric=artifacts --optional-metric=replication_status  # Specify optional metrics to collect
+      # Specify environment file for Artifactory exporter
+      - /opt/exp/env.env
+    command: --optional-metric=artifacts --optional-metric=replication_status
+
+# Define named volumes for persistence
+volumes:
+  grafana-data:
+  loki-data:
+  prometheus_data:
+
+# Define the network for the services
+networks:
+  grafana:
+    driver: bridge
