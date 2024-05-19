@@ -1,6 +1,6 @@
 # Equinor Cloud Infrastructure Monitoring Guide
 
-<!-- Enter sudo -->
+<!--- Enter sudo --->
 sudo su
 
 # Lage mappe
