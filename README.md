@@ -1,4 +1,4 @@
-### Equinor Cloud Infrastructure Monitoring Guide
+# Equinor Cloud Infrastructure Monitoring Guide
 
 # Enter sudo
 sudo su
