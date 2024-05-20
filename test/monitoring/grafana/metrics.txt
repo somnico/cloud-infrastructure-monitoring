@@ -67,7 +67,7 @@ Transfers
 # TYPE jfsh_binaries_download_failures_total counter
 
 # HELP jfsh_binaries_upload_failures_total Counts the total number of failed binary upload operations
-# TYPE jfsh_binaries_upload_failures_total counter
+# TYPE jfsh_binaries_upload_failures_total countere
 
 # HELP jfsh_binaries_download_speed Speed of downloading a binary
 # TYPE jfsh_binaries_download_speed summary
@@ -81,15 +81,26 @@ Various
 # HELP jfrt_db_connections_max_active_total Total Max Active Connections
 # TYPE jfrt_db_connections_max_active_total gauge
 
+# HELP jfrt_slow_queries_duration_seconds Time taken for query e
+# TYPE jfrt_slow_queries_duration_seconds gauge
+
 # HELP java_lang_OperatingSystem_TotalMemorySize java.lang:name=null,type=OperatingSystem,attribute=TotalMemorySize
 # TYPE java_lang_OperatingSystem_TotalMemorySize untyped
-
-# TYPE jobs_active gauge
-# HELP jobs_active The number of scheduled jobs running at the moment
 
 # HELP jvm_threads_state Current count of threads by state
 # TYPE jvm_threads_state gauge
 
+# HELP java_lang_operatingsystem_maxfiledescriptorcount java.lang:name=null,type=OperatingSystem,attribute=MaxFileDescriptorCount
+# TYPE java_lang_operatingsystem_maxfiledescriptorcount untyped
+
+# TYPE jobs_active gauge
+# HELP jobs_active The number of scheduled jobs running at the moment
+
+# HELP jfsh_cache_evicted_bytes Counts the amount of cleared bytes from cache-fs
+# TYPE jfsh_cache_evicted_bytes gauge
+
+# HELP catalina_globalrequestprocessor_errorcount Number of errors 
+# TYPE catalina_globalrequestprocessor_errorcount untyped
 
 NGINX
 
