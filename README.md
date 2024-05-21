@@ -3,8 +3,8 @@ Enter sudo
 ```sudo su```
 
 Lage mappe
-```mkdir /opt/jmx
-cd /opt/jmx```
+```mkdir /opt/jmx```
+```cd /opt/jmx```
 
 Laste ned exporteren
 ```wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.20.0/jmx_prometheus_javaagent-0.20.0.jar```
