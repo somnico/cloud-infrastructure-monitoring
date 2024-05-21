@@ -1,6 +1,6 @@
 # Equinor Cloud Infrastructure Monitoring Guide
 
-## For å sette opp Artifactory
+## For å sette opp Artifactory i prod
 
 Enter sudo   
 ```
