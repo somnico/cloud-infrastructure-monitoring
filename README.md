@@ -7,13 +7,13 @@ Enter sudo
 sudo su
 ```
 
-Lage mappe
+Lag mappe
 ```
 mkdir /opt/jmx
 cd /opt/jmx
 ```
 
-Laste ned exporteren
+Last ned exporteren
 ```
 wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.20.0/jmx_prometheus_javaagent-0.20.0.jar
 ```
@@ -28,12 +28,12 @@ Oppdater innholdet fra artifactory/system.yaml til /opt/jfrog/artifactory/var/et
 nano /opt/jfrog/artifactory/var/etc/system.yaml
 ```
 
-Installere Fluentd
+Installer Fluentd
 ```
 curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package5-lts.sh | sh
 ```
  
-Installere Prometheus Fluentd-plugin
+Installer Prometheus Fluentd-plugin
 ```
 fluent-gem install fluent-plugin-prometheus fluent-plugin-grafana-loki fluent-plugin-loki
 ```
@@ -53,7 +53,7 @@ Gjør log filene til Artifactory readable
 chmod a+r -R /opt/jfrog/artifactory/var/log
 ```
 
-Kjør fluentd 
+Kjør Fluentd 
 ```
 systemctl start fluentd 
 ```
@@ -80,17 +80,17 @@ Kopier innholdet fra nginx/reverse_proxy.conf til /etc/nginx/conf.d/reverse_prox
 nano /etc/nginx/conf.d/reverse_proxy.conf
 ```
 
-Installere Fluentd
+Installer Fluentd
 ```
 curl -fsSL https://toolbelt.treasuredata.com/sh/install-redhat-fluent-package5-lts.sh | sh
 ```
  
-Installere Prometheus Fluentd-plugin
+Installer Prometheus Fluentd-plugin
 ```
 fluent-gem install fluent-plugin-prometheus fluent-plugin-grafana-loki fluent-plugin-loki
 ```
 
-Gå til etc/fluent mappen og kopier innholdet fra nginx/fluentd.conf til /etc/fluent/fluent.conf
+Kopier innholdet fra nginx/fluentd.conf til /etc/fluent/fluent.conf
 ```
 nano /etc/fluentfluentd
 ```
@@ -99,5 +99,11 @@ Kopier innholdet fra nginx/fluentd.service til /etc/systemd/system/fluent.servic
 ```
 nano /etc/systemd/system/fluent.service
 ```
+
+Kjør Fluentd 
+```
+systemctl start fluentd 
+```
+
 
 
