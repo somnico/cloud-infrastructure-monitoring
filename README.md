@@ -1,6 +1,6 @@
 # Equinor Cloud Infrastructure Monitoring Guide
-//Enter sudo   
-sudo su
+Enter sudo   
+```sudo su```
 
 # Lage mappe
 mkdir /opt/jmx
