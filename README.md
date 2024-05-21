@@ -1,4 +1,4 @@
-# Equinor Cloud Infrastructure Monitoring Guide
+# Cloud Infrastructure Monitoring Guide For Equinor
 
 ## For å sette opp Artifactory i prod
 
