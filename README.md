@@ -1,4 +1,7 @@
 # Equinor Cloud Infrastructure Monitoring Guide
+
+## For å sette opp Artifactory
+
 Enter sudo   
 ```
 sudo su
@@ -30,12 +33,11 @@ Installere Prometheus Fluentd-plugin
 fluent-gem install fluent-plugin-prometheus fluent-plugin-grafana-loki fluent-plugin-loki
 ```
 
-Flytt til fluent-mappen og kopier innholdet fra "fluentd.conf.KOPIER" filen til /etc/fluent/fluentd.conf
+Gå til etc/fluent mappen og kopier innholdet fra artifactory/fluentd.conf til /etc/fluent/fluent.conf
 ```
 cd /etc/fluent
+nano fluentd
 ```
-
-Kopiere fluentd.conf dit
 
 # Gjør log filene readable
 chmod a+r -R /opt/jfrog/artifactory/var/log
