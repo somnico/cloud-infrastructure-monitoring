@@ -3,6 +3,7 @@ Enter sudo
 ```sudo su```
 
 Lage mappe
+
 ```mkdir /opt/jmx```
 ```cd /opt/jmx```
 
