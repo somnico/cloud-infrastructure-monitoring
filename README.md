@@ -38,14 +38,18 @@ Gå til etc/fluent mappen og kopier innholdet fra artifactory/fluentd.conf til /
 cd /etc/fluent
 nano fluentd
 ```
+Kopier artifactory/fluentd.service til /etc/systemd/system/fluent.service
+```
+cd /etc/systemd/system/
+nano fluent.service
+```
 
-# Gjør log filene readable
+Gjør log filene til Artifactory readable
+```
 chmod a+r -R /opt/jfrog/artifactory/var/log
+```
+Kjør fluentd 
+```
+systemctl start fluentd 
+```
 
-# Kjør fluentd (må være i /etc/fluentd dir)
-fluentd -c fluentd.conf &
-
-# For å stoppe: ctrl + z
-
-# For å fjerne prosessen
-pkill -9 -f fluentd
