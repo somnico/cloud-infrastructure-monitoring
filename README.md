@@ -4,7 +4,7 @@ Enter sudo
 
 Lage mappe
 
-```mkdir /opt/jmx```
+``mkdir /opt/jmx``
 ```cd /opt/jmx```
 
 Laste ned exporteren
