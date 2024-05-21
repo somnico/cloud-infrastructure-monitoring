@@ -2,12 +2,12 @@
 Enter sudo   
 ```sudo su```
 
-# Lage mappe
-mkdir /opt/jmx
-cd /opt/jmx
+Lage mappe
+```mkdir /opt/jmx
+cd /opt/jmx```
 
-# Laste ned exporteren
-wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.20.0/jmx_prometheus_javaagent-0.20.0.jar
+Laste ned exporteren
+```wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.20.0/jmx_prometheus_javaagent-0.20.0.jar```
 
 # Lage en basic config
 printf 'rules:\n- pattern: ".*"\n' | sudo tee config.yaml > /dev/null
